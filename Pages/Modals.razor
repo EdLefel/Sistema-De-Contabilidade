@@ -1,0 +1,190 @@
+@page "/clients"
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager Navigation
+@using System.ComponentModel.DataAnnotations
+
+
+
+<h3>Exemplo de Janela Modal</h3>
+
+<button @onclick="OpenModal">Abrir Janela de Mensagem</button>
+
+@if (showModal)
+{
+    <div class="modal-overlay">
+        <div class="modal-content">
+            <div>
+            <h3>Cadastro de Cliente</h3>
+
+            <EditForm Model="formModel" OnValidSubmit="HandleValidSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <!-- Tipo de Pessoa (Físico/Jurídico) -->
+                    <div class="form-group">
+                        <h5>Tipo pessoa:</h5>
+                        <select @bind="formModel.TipoPessoa"  class="form-control">
+                            <option value="Fisico">Físico</option>
+                            <option value="Juridico">Jurídico</option>
+                        </select>
+                    </div>
+
+                <!-- Razão Social -->
+                <div>
+                    <h5>Razão Social:</h5>
+                    <InputText class="form-control" @bind-Value="formModel.RazaoSocial" />
+                </div>
+
+                <!-- Nome Fantasia -->
+                <div>
+                    <h5>Nome Fantasia:</h5>
+                    <InputText class="form-control" @bind-Value="formModel.NomeFantasia" />
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <h5 for="email">Email:</h5>
+                    <InputText id="email" type="email" class="form-control" @bind-Value="formModel.Email" />
+                </div>
+
+                <!-- Telefone Contato 1 -->
+                <div>
+                    <h5 for="telefone1">Telefone Contato 1:</h5>
+                    <InputText id="telefone1" class="form-control" @bind-Value="formModel.TelefoneContato1" />
+                </div>
+
+                <!-- Telefone Contato 2 -->
+                <div>
+                    <h5 for="telefone2">Telefone Contato 2:</h5>
+                    <InputText id="telefone2" class="form-control" @bind-Value="formModel.TelefoneContato2" />
+                </div>
+
+                <!-- CPF / CNPJ -->
+                <div>
+                    <h5 for="cpfCnpj">CPF / CNPJ:</h5>
+                    <InputText id="cpfCnpj" class="form-control" @bind-Value="formModel.CpfCnpj" />
+                </div>
+
+                <!-- RG -->
+                <div>
+                    <h5 for="rg">RG:</h5>
+                    <InputText id="rg" class="form-control" @bind-Value="formModel.Rg" />
+                </div>
+
+                <!-- Data de Cadastro -->
+                <div>
+                    <h5 for="dataCadastro">Data de Cadastro:</h5>
+                    <InputDate id="dataCadastro" class="form-control" @bind-Value="formModel.DataCadastro" />
+                </div>
+
+                <!-- Data de Nascimento -->
+                <div>
+                    <h5 for="dataNascimento">Data de Nascimento:</h5>
+                    <InputDate id="dataNascimento" class="form-control" @bind-Value="formModel.DataNascimento" />
+                </div>
+
+                <!-- CEP -->
+                <div>
+                    <h5 for="cep">CEP:</h5>
+                    <InputText id="cep" class="form-control" @bind-Value="formModel.Cep" />
+                </div>
+
+                <!-- Endereço -->
+                <div>
+                    <h5 for="endereco">Endereço:</h5>
+                    <InputText id="endereco" class="form-control" @bind-Value="formModel.Endereco" />
+                </div>
+
+                <!-- Número -->
+                <div>
+                    <h5 for="numero">Número:</h5>
+                    <InputText id="numero" class="form-control" @bind-Value="formModel.Numero" />
+                </div>
+
+                <!-- Cidade -->
+                <div>
+                    <h5 for="cidade">Cidade:</h5>
+                    <InputText id="cidade" class="form-control" @bind-Value="formModel.Cidade" />
+                </div>
+
+                <!-- UF (Estados do Brasil) -->
+                <div>
+                    <h5 for="uf">UF:</h5>
+                    <select @bind="formModel.Uf" id="uf" class="form-control">
+                        @foreach (var estado in estadosBrasil)
+                        {
+                            <option value="@estado">@estado</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </EditForm>
+        </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    private bool showModal = false;
+    private int count = 0;
+
+    private void OpenModal()
+    {
+        showModal = true;
+    }
+
+    private void CloseModal()
+    {
+        showModal = false;
+    }
+
+    private void IncrementCount()
+    {
+        count++;
+    }
+
+        // Modelo para o formulário
+    public class CadastroModel
+    {
+        [Required]
+        public string TipoPessoa { get; set; }
+
+        public string RazaoSocial { get; set; }
+        public string NomeFantasia { get; set; }
+        [EmailAddress]
+        public string Email { get; set; }
+        public string TelefoneContato1 { get; set; }
+        public string TelefoneContato2 { get; set; }
+        public string CpfCnpj { get; set; }
+        public string Rg { get; set; }
+        public DateTime? DataCadastro { get; set; }
+        public DateTime? DataNascimento { get; set; }
+        public string Cep { get; set; }
+        public string Endereco { get; set; }
+        public string Numero { get; set; }
+        public string Cidade { get; set; }
+        [Required]
+        public string Uf { get; set; }
+        public bool Devendo { get; set; } = false;
+
+    }
+
+    // Inicializando o modelo do formulário
+    private CadastroModel formModel = new CadastroModel();
+
+    // Lista de estados do Brasil
+    private readonly List<string> estadosBrasil = new List<string>
+    {
+        "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"
+    };
+
+    private void HandleValidSubmit()
+    {
+        // Aqui você pode processar o envio do formulário
+        Console.WriteLine("Formulário enviado com sucesso!");
+    }
+}

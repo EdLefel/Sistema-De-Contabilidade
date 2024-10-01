@@ -1,0 +1,118 @@
+@page "/product-crud"
+@using BancoDeDados.Services
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@inject ProductService  ProductService 
+@inject NavigationManager Navigation
+@attribute [Authorize]
+
+<body class="back-body">
+<h3>Controle de Estoque e Produtos</h3>
+
+<!-- LISTA DE PRODUTOS -->
+<h3>Lista de Produtos</h3>
+@if (products == null)
+{
+    <h6>Sem Produtos!</h6>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Adicionado Por:</th>
+                <th>Produto</th>
+                <th>Valor</th>
+                <th>Quantidade</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products)
+            {
+                <tr>
+                    <td>@product.NomeUser</td>
+                    <td>@product.ProdutoNome</td>
+                    <td>@product.Valor</td>
+                    <td>
+                        <button @onclick="() => EditProduct(product)">Editar</button>
+                        <button @onclick="() => DeleteProduct(product.Id)">Excluir</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+</body>
+@code {
+
+    @inject AuthenticationStateProvider AuthenticationStateProvider
+
+    private string userName;
+
+     protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (!user.Identity.IsAuthenticated)
+        {
+            // Se o usuário não estiver autenticado, redireciona para a página de login
+            Navigation.NavigateTo("/");
+        }
+        else
+        {
+            await LoadProducts();
+            userName = user.Identity.Name;
+        }
+    }
+
+    private readonly List<string> estadosBrasil = new List<string>
+    {
+     "Kilo",  "Grama (g)", "Miligrama (mg)", "Mililitro (ml)", "Litro", "Unidade", "Milimetro", "Metro Quadrado (m)", "Metro (M)", "Centimetro"
+    };
+    private List<Product>? products;
+
+    private Product newProduct = new Product();
+
+    private bool isEditMode = false;
+
+    private async Task LoadProducts()
+    {
+        products = await ProductService.GetProductsAsync();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (isEditMode)
+        {
+            // Atualizar produto existente
+            await ProductService.UpdateProductAsync(newProduct);
+            isEditMode = false;
+        }
+        else
+        {
+            // Adicionar novo produto
+            await ProductService.CreateProductAsync(newProduct);
+        }
+
+        // Limpar o formulário
+        newProduct = new Product();
+        await LoadProducts();  // Recarregar a lista de produtos
+    }
+
+    // Função para editar um produto
+    private void EditProduct(Product product)
+    {
+        newProduct = product;  // Carrega o produto no formulário
+        isEditMode = true;
+    }
+
+    // Função para excluir um produto
+    private async Task DeleteProduct(int id)
+    {
+        await ProductService.DeleteProductAsync(id);
+        await LoadProducts();  // Recarregar a lista de produtos
+    }
+}

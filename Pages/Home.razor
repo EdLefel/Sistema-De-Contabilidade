@@ -1,0 +1,78 @@
+﻿@using BancoDeDados.Services
+@using Microsoft.AspNetCore.Authorization
+@inject NavigationManager Navigation
+@using Microsoft.AspNetCore.Components.Authorization
+@using Users.models
+@page "/dashboard"
+@attribute [Authorize]
+
+<PageTitle>dashboard - ELF</PageTitle>
+
+<div class="bodyy">
+    <h1>Dashboard</h1>
+    <h3>Painel de Controle e Estatísticas</h3>
+    <div class="simple-bar-chart">
+    
+        <div class="item" style="--clr: #5EB344; --val: 45">
+            <div class="label">Vendas </div>
+            <div class="value">45%</div>
+        </div>
+        
+        <div class="item" style="--clr: #FCB72A; --val: 50">
+            <div class="label">Compras</div>
+            <div class="value">50%</div>
+        </div>
+        
+        <div class="item" style="--clr: #F8821A; --val: 100">
+            <div class="label">Gastos</div>
+            <div class="value">100%</div>
+        </div>
+        
+        <div class="item" style="--clr: #E0393E; --val: 15">
+            <div class="label">Dividas</div>
+            <div class="value">15%</div>
+        </div>
+        
+        <div class="item" style="--clr: #963D97; --val: 1">
+            <div class="label">A Receber</div>
+            <div class="value">1%</div>
+        </div>
+        
+        <div class="item" style="--clr: #069CDB; --val: 90">
+            <div class="label">Pedidos</div>
+            <div class="value">90%</div>
+        </div>
+    </div>
+
+     <ul>
+        <li><h6>Útimos Pedidos</h6></li>
+    </ul>
+    <ul>
+        <li><h6>Atalho de Ações</h6></li>
+    </ul>
+</div>
+
+
+@code{
+    
+    @inject AuthenticationStateProvider AuthenticationStateProvider
+
+    private string userName;
+
+     protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (!user.Identity.IsAuthenticated)
+        {
+            // Se o usuário não estiver autenticado, redireciona para a página de login
+            Navigation.NavigateTo("/");
+        }
+        else
+        {
+            userName = user.Identity.Name;
+        }
+    }
+
+}

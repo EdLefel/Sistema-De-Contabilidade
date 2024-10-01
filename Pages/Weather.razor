@@ -1,0 +1,30 @@
+﻿@page "/dash"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@attribute [Authorize]
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+
+<h3>Dashboard</h3>
+
+<p>Bem-vindo, @userName!</p>
+
+@code {
+    private string userName;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (!user.Identity.IsAuthenticated)
+        {
+            // Se o usuário não estiver autenticado, redireciona para a página de login
+            Navigation.NavigateTo("/");
+        }
+        else
+        {
+            userName = user.Identity.Name;
+        }
+    }
+}

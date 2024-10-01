@@ -1,0 +1,82 @@
+is_global = true
+build_property.EnableAotAnalyzer = 
+build_property.EnableSingleFileAnalyzer = 
+build_property.EnableTrimAnalyzer = false
+build_property.IncludeAllContentForSelfExtract = 
+build_property.MudDebugAnalyzer = 
+build_property.MudAllowedAttributePattern = 
+build_property.MudIllegalParameters = 
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = false
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = browser
+build_property.RootNamespace = BancoDeDados
+build_property.RootNamespace = BancoDeDados
+build_property.ProjectDir = /Users/eduardomartins/BlazorDBProject/BancoDeDados/BancoDeDados/
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = false
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = /Users/eduardomartins/BlazorDBProject/BancoDeDados/BancoDeDados
+build_property._RazorSourceGeneratorDebug = 
+
+[/Users/eduardomartins/BlazorDBProject/BancoDeDados/BancoDeDados/wwwroot/App.razor]
+build_metadata.AdditionalFiles.TargetPath = d3d3cm9vdC9BcHAucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/eduardomartins/BlazorDBProject/BancoDeDados/BancoDeDados/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/eduardomartins/BlazorDBProject/BancoDeDados/BancoDeDados/Pages/Counter.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ291bnRlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/eduardomartins/BlazorDBProject/BancoDeDados/BancoDeDados/Pages/CreateEditCliente.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ3JlYXRlRWRpdENsaWVudGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/eduardomartins/BlazorDBProject/BancoDeDados/BancoDeDados/Pages/CreateProduto.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ3JlYXRlUHJvZHV0by5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/eduardomartins/BlazorDBProject/BancoDeDados/BancoDeDados/Pages/CreateProdutocopy.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ3JlYXRlUHJvZHV0b2NvcHkucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/eduardomartins/BlazorDBProject/BancoDeDados/BancoDeDados/Pages/Home.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSG9tZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/eduardomartins/BlazorDBProject/BancoDeDados/BancoDeDados/Pages/Login.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTG9naW4ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/eduardomartins/BlazorDBProject/BancoDeDados/BancoDeDados/Pages/Modals.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTW9kYWxzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/eduardomartins/BlazorDBProject/BancoDeDados/BancoDeDados/Pages/TinyMCEEditor.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVGlueU1DRUVkaXRvci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/eduardomartins/BlazorDBProject/BancoDeDados/BancoDeDados/Pages/Weather.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvV2VhdGhlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/eduardomartins/BlazorDBProject/BancoDeDados/BancoDeDados/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/eduardomartins/BlazorDBProject/BancoDeDados/BancoDeDados/Layout/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0L01haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-1zxdjuffej
+
+[/Users/eduardomartins/BlazorDBProject/BancoDeDados/BancoDeDados/Layout/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0L05hdk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-j6vtpexr8a

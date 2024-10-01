@@ -1,0 +1,76 @@
+@page "/"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using global::Services
+@inject CustomAuthenticationStateProvider AuthenticationStateProvider
+@inject HttpClient HttpClient
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@using Models.AddModels
+@using global::Services.GlobalVars
+
+@attribute [Authorize] 
+
+<div>
+            <div class="container">
+                <div class="signin-content">
+                    <div class="signin-image">
+                        <figure><img src="singin.jpg" alt="sing up image"></figure>
+                    </div>
+
+                    <div class="signin-form">
+                        <h2 class="form-title">Sign In</h2>
+                            <div class="form-group">
+                                <div>Usuário:</div><br/>
+                                <input @bind="username" />
+                            </div>
+                            <div class="form-group">
+                                <div>Senha:</div><br/>
+                                <input type="password" @bind="password" />
+                            </div>
+                            <div class="form-group">
+                                <button class="button-35" role="button" @onclick="LoginAuth">Login</button>
+                            </div>
+                            @if (!string.IsNullOrEmpty(errorMessage))
+                            {
+                                <p style="color:red">@errorMessage</p>
+                            }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+@code {
+    private string? username;
+    private string? password;
+    private string? errorMessage;
+
+        public static AppState _appState;
+
+    private async Task LoginAuth()
+    {
+        // Envia a requisição de login para a sua API
+        var loginRequest = new LoginRequest
+        {
+            NomeUser = username,
+            Password = password
+        };
+
+        var response = await HttpClient.PostAsJsonAsync("api/auth/login", loginRequest);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var token = await response.Content.ReadAsStringAsync();
+            // Autenticar o usuário e salvar o token no sessionStorage
+            var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthenticationStateProvider;
+            await customAuthStateProvider.MarkUserAsAuthenticated(token, username);
+            //Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
+            Navigation.NavigateTo("/dashboard");
+        }
+        else
+        {
+            errorMessage = "Credenciais inválidas!";
+        }
+    }
+
+}

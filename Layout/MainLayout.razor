@@ -1,0 +1,47 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@using global::Services
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inherits LayoutComponentBase
+@inject NavigationManager Navigation
+@attribute [Authorize]
+
+<div class="page">
+     <div class="sidebar">
+        <NavMenu />
+    </div>
+    <main>
+        <div class="top-row">
+            <div class="top-row-bottom ps-3">
+            </div>
+                <a href="" target="_blank" class="wc-box">
+                    <button class="closetwo">
+                        login
+                    </button>
+                </a>
+                <div class="wc-box">
+                        <button class="close" @onclick="Logout">sair</button>
+                </div>
+            </div>
+        <div>
+        @Body
+        </div>
+
+        <footer class="footer">
+            <p>&copy; Eduardo Henrique Urbano Martins - 2024</p>
+        </footer>
+    </main>
+</div>
+
+@code{
+
+    public bool estadodelogin = false;
+
+     private async Task Logout()
+    {
+        var customAuthProvider = (CustomAuthenticationStateProvider)AuthenticationStateProvider;
+        await customAuthProvider.MarkUserAsLoggedOut();
+        Navigation.NavigateTo("/");
+    }
+    }

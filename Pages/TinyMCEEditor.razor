@@ -1,0 +1,35 @@
+@page "/editor"
+@using System
+@inject IJSRuntime JSRuntime
+
+<div>
+    <textarea id="tinymce-editor"></textarea>
+</div>
+
+<button @onclick="SaveContent">Salvar Conteúdo</button>
+<p>@content</p>
+
+@code {
+    private string content = string.Empty;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Inicializa o TinyMCE após a primeira renderização
+            await JSRuntime.InvokeVoidAsync("tinymce.init", new
+            {
+                selector = "#tinymce-editor",
+                plugins = "link image code",
+                toolbar = "undo redo | formatselect | bold italic | alignleft aligncenter alignright | code"
+            });
+        }
+    }
+
+    private async Task SaveContent()
+    {
+        // Obtém o conteúdo do TinyMCE via JavaScript
+        content = await JSRuntime.InvokeAsync<string>("tinymce.get", "tinymce-editor + '.getContent()'");
+        Console.WriteLine(content.ToString());
+    }
+}

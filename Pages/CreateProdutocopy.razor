@@ -1,0 +1,324 @@
+@page "/productss"
+@using BancoDeDados.Services
+@using BancoDeDados.models.Clients
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@using Models.AddModels
+@using System.Security.Claims
+@inject ProductService productService
+@using global::Services.GlobalVars
+
+<body>
+<h3>Gerenciamento de Clientes</h3>
+
+<div class="main-content">
+    <!-- Botão para abrir o modal -->
+    <button @onclick="OpenModal">Novo Produto</button>
+    <!-- Tabela de clientes -->
+    <div class="client-table">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Adicionado Por:</th>
+                    <th>Produto</th>
+                    <th>Descrição</th>
+                    <th>Valor</th>
+                    <th>Quantidade</th>
+                    <th>Tipo</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in paginatedProducts)
+                {
+                    
+                        <tr class="row-texto">
+                            <td>@product.Id</td>
+                            <td>@product.NomeUser</td>
+                            <td>@product.ProdutoNome</td>
+                            <td>@product.Descricao</td>
+                            <td>@product.Preco</td>
+                            <td>@product.Quantidade</td>
+                            <td>@product.Valor</td>
+                            <td>
+                                <button @onclick="() => EditProduct(product.Id)">Editar</button>
+                                <button @onclick="() => DeleteProduct(product.Id)">Excluir</button>
+                            </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Controle de Paginação -->
+    <div class="pagination">
+        <span @onclick="PreviousPage" disabled="@(!HasPreviousPage)">Anterior</span>
+        <span>Página @currentPage de @totalPages</span>
+        <span @onclick="NextPage" disabled="@(!HasNextPage)">Próxima</span>
+    </div>
+
+    <!-- Modal de Cadastro / Edição -->
+    @if (showModal)
+    {
+ <div class="modal-overlay">
+        <div class="modal-content">
+            <div>
+                <div class="wc-box">
+                    <button class="close" @onclick="CloseModal">Fechar</button>
+                </div>
+
+                <h3>Cadastro de Produto</h3>
+
+                <EditForm Model="formModel" OnValidSubmit="HandleValidSubmit">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <div class="form-group">
+                        <h6 for="nomeUser">Nome do Usuário:</h6>
+                        <InputText disabled id="nomeUser" class="form-control" @bind-Value="formModel.NomeUser" />
+                    </div>
+
+                    <div class="form-group">
+                        <h6 for="produtoNome">Nome do Produto:</h6>
+                        <InputText id="produtoNome" class="form-control" @bind-Value="formModel.ProdutoNome" />
+                    </div>
+
+                    <div class="form-group">
+                        <h6 for="descricao">Descrição:</h6>
+                        <InputTextArea id="descricao" class="form-control" @bind-Value="formModel.Descricao" />
+                    </div>
+
+                    <div class="form-group">
+                        <h6 for="imagem">Imagem (URL):</h6>
+                        <InputText id="imagem" class="form-control" @bind-Value="formModel.Imagem" />
+                    </div>
+
+                    <div class="form-group">
+                        <h6 for="preco">Preço:</h6>
+                        <InputNumber id="preco" class="form-control" @bind-Value="formModel.Preco" />
+                    </div>
+
+                    <div class="form-group">
+                        <h6 for="quantidade">Quantidade:</h6>
+                        <InputNumber id="quantidade" class="form-control" @bind-Value="formModel.Quantidade" />
+                    </div>
+
+                    <div class="form-group">
+                        <h6 for="valor">Valor De Medida:</h6>
+                        <select @bind="formModel.Valor" id="valor" class="form-control">
+                            @foreach (var estado in @productsValues)
+                            {
+                                <option value="@estado">@estado</option>
+                            }
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-3">Salvar</button>
+                    <button type="button" class="btn btn-secondary mt-3" @onclick="CloseModal">Fechar</button>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn btn-secondary mt-3" @onclick="CloseModal">Fechar</button>
+    }
+</div>
+</body>
+
+@code {
+
+    private List<Product> products = new List<Product>(); 
+    private List<Product> paginatedProducts = new List<Product>(); 
+    private int currentPage = 1;
+    private int pageSize = 20; 
+    private int totalPages = 1;
+
+    private bool HasPreviousPage => currentPage > 1;
+    private bool HasNextPage => currentPage < totalPages;
+
+    private async Task LoadProducts()
+    {
+        products = await productService.GetProductsAsync();
+        totalPages = (int)Math.Ceiling(products.Count / (double)pageSize);
+        LoadCurrentPageProducts();
+    }
+
+    private async Task LoadProductssAsync()
+        {
+            
+            products = await productService.GetProductsAsync();
+            // Ordena os clientes de acordo com a coluna e direção escolhidas
+            if (_sortColumn == "Id")
+            {
+                products = _isAscending ? products.OrderBy(p => p.Id).ToList() : products.OrderByDescending(p => p.Id).ToList();
+            }
+            else if (_sortColumn == "Razaosocial"){
+
+                products = _isAscending ? products.OrderBy(p => p.ProdutoNome).ToList() : products.OrderByDescending(p => p.ProdutoNome).ToList();
+            }
+
+            //_clientes = clientes; // Atualiza a lista de clientes exibidos
+        }
+
+    private async Task SortBy(string column){
+
+        if (_sortColumn == column)
+        {
+            // Se a coluna já estiver selecionada, inverta a direção da ordenação
+            _isAscending = !_isAscending;
+        }
+        else
+        {
+            // Se for uma nova coluna, defina como ascendente
+            _sortColumn = column;
+            _isAscending = true;
+    }
+
+    // Recarrega a lista de clientes com a nova ordenação
+     LoadCurrentPageProducts();
+}
+
+
+    private void LoadCurrentPageProducts()
+    {
+        // Carregar os clientes da página atual com base no número da página e tamanho
+        paginatedProducts = products
+            .Skip((currentPage - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+    }
+
+    private void NextPage()
+    {
+        if (currentPage < totalPages)
+        {
+            currentPage++;
+            LoadCurrentPageProducts();
+        }
+    }
+
+    private void PreviousPage()
+    {
+        if (currentPage > 1)
+        {
+            currentPage--;
+            LoadCurrentPageProducts();
+        }
+    }
+
+    private readonly List<string> productsValues = new List<string>
+    {
+     "Kilo",  "Grama (g)", "Miligrama (mg)", "Mililitro (ml)", "Litro", "Unidade", "Milimetro", "Metro Quadrado (m)", "Metro (M)", "Centimetro", "oz"
+    };
+
+    private bool _isAscending = true; // Controla a direção da ordenação
+    private string _sortColumn = "Id"; // Controla a coluna de ordenação
+    private bool showModal = false;
+    private CadastroProductModel formModel = new CadastroProductModel();
+
+   // Método para converter de Client para CadastroModel
+
+
+    private void OpenModal()
+    {
+        formModel = new CadastroProductModel(); // Resetar o formulário
+        showModal = true;
+    }
+
+    private void CloseModal()
+    {
+        showModal = false;
+    }
+
+    private async Task EditProduct(int id)
+    {
+        var product = await  productService.GetProductByIdAsync(id);
+        formModel = ConvertToCadastroModel(product);
+        showModal = true; // Abre o modal para editar
+    }
+
+    private async Task DeleteProduct(int id)
+    {
+        await productService.DeleteProductAsync(id);
+        products = await productService.GetProductsAsync();
+        await LoadProducts();
+    }
+
+    private Product ConvertToProduct(CadastroProductModel cadastroModel)
+{
+    return new Product
+    {
+        Id = cadastroModel.Id,
+        NomeUser = cadastroModel.NomeUser,
+        ProdutoNome = cadastroModel.ProdutoNome,
+        Descricao = cadastroModel.Descricao,
+        Imagem = cadastroModel.Imagem,
+        Preco = cadastroModel.Preco,
+        Quantidade = cadastroModel.Quantidade,
+        Valor = cadastroModel.Valor
+    };
+}
+
+private CadastroProductModel ConvertToCadastroModel(Product product)
+{
+    return new CadastroProductModel
+    {
+        Id = product.Id,
+        NomeUser = product.NomeUser,
+        ProdutoNome = product.ProdutoNome,
+        Descricao = product.Descricao,
+        Imagem = product.Imagem,
+        Preco = product.Preco,
+        Quantidade = product.Quantidade,
+        Valor = product.Valor
+    };
+}
+
+
+
+    private async Task HandleValidSubmit()
+{
+    var product = ConvertToProduct(formModel); // Converte o CadastroProductModel para Product
+
+    if (product.Id == 0)
+    {
+        await productService.CreateProductAsync(product);
+    }
+    else
+    {
+        await productService.UpdateProductAsync(product);
+    }
+
+    // Fechar o modal e atualizar a lista
+    products = await productService.GetProductsAsync();
+    await LoadProducts();
+    showModal = false;
+
+}
+
+    @inject AuthenticationStateProvider AuthenticationStateProvider
+    @inject NavigationManager Navigation
+    @attribute [Authorize]
+    private string userName;
+
+     protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (!user.Identity.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/");
+        }
+        else
+        {
+            await LoadProducts();
+            userName = user.FindFirst(ClaimTypes.Name)?.Value;
+            
+        }
+    }
+    
+}

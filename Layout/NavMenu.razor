@@ -1,0 +1,105 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@inject NavigationManager Navigation
+@attribute [Authorize]
+
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+
+    <nav class="flex-column">
+
+        <div class="paddingtwo" />
+
+        <button class="button-82-pushable" role="button" @onclick="DashboardRoute">
+            <span class="button-82-shadow"></span>
+            <span class="button-82-edge"></span>
+            <span class="button-82-front text-navitem">
+            📊 DASHBOARD
+            </span>
+        </button>
+
+         <div class="padding" />
+
+          <button class="button-82-pushable" role="button" @onclick="ClientsRoute">
+            <span class="button-82-shadow"></span>
+            <span class="button-82-edge"></span>
+            <span class="button-82-front text-navitem">
+            👥 CLIENTES
+            </span>
+        </button>
+
+         <div class="padding" />
+
+         <button class="button-82-pushable" role="button" @onclick="NotasOneRoute">
+            <span class="button-82-shadow"></span>
+            <span class="button-82-edge"></span>
+            <span class="button-82-front text-navitem">
+            🧾 NOTAS
+            </span>
+        </button>
+
+         <div class="padding" />
+
+         <button class="button-82-pushable" role="button" @onclick="ClientsRoute">
+            <span class="button-82-shadow"></span>
+            <span class="button-82-edge"></span>
+            <span class="button-82-front text-navitem">
+            💰🟢 VENDAS
+            </span>
+        </button>
+
+         <div class="padding" />
+
+         <button class="button-82-pushable" role="button" @onclick="ClientsRoute">
+            <span class="button-82-shadow"></span>
+            <span class="button-82-edge"></span>
+            <span class="button-82-front text-navitem">
+            💰🔻 PAGAMENTOS
+            </span>
+        </button>
+
+         <div class="padding" />
+
+        <button class="button-82-pushable" role="button" @onclick="ProductRoute">
+            <span class="button-82-shadow"></span>
+            <span class="button-82-edge"></span>
+            <span class="button-82-front text-navitem">
+            📦 ESTOQUE
+            </span>
+        </button>
+
+        <div class="padding" />
+
+        <button class="button-82-pushable" role="button" @onclick="ProductRoute">
+            <span class="button-82-shadow"></span>
+            <span class="button-82-edge"></span>
+            <span class="button-82-front text-navitem">
+            📬 PEDIDOS 🔜
+            </span>
+        </button>
+        
+    </nav>
+</div>
+
+@code{
+
+    private bool estadodelogin = false;
+
+    public void DashboardRoute() {
+        Navigation.NavigateTo("/dashboard");
+    }
+    public void ClientsRoute() {
+        Navigation.NavigateTo("/clients-crud");
+    }
+
+     public void ProductRoute() {
+        Navigation.NavigateTo("/productss");
+    }
+     public void NotasOneRoute() {
+        Navigation.NavigateTo("/generate-pdf");
+    }
+
+}

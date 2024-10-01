@@ -1,0 +1,452 @@
+@page "/clients-crud"
+@using BancoDeDados.services
+@using BancoDeDados.models.Clients
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@using Models.AddModels
+@inject ClientService clientService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+@attribute [Authorize]
+
+<body>
+<h3>Gerenciamento de Clientes</h3>
+
+<div class="main-content">
+    <!-- Botão para abrir o modal -->
+    <div class="butons-select">
+    <button @onclick="OpenModal">Novo Cliente</button>
+    <select @bind="pesquisaTipo" class="appearance-select">
+        @foreach (var estado in pesquisaSelect)
+        {
+            <option value="@estado">@estado</option>
+        }
+    </select>
+    <button>🔍</button>
+    <InputText @bind-Value="pesquisa" class="form-control-normal"></InputText>
+    </div>
+    <!-- Tabela de clientes -->
+    <div class="client-table">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th @onclick='() => SortBy("Id")'>ID</th>
+                    <th>Tipo Pessoa</th>
+                    <th><button @onclick='() => SortBy("Razaosocial")' >Razão Social</button></th>
+                    <th>Nome Fantasia</th>
+                    <th>Email</th>
+                    <th>Telefone</th>
+                    <th>Cidade</th>
+                    <th>UF</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var client in paginatedClients)
+                {
+                    if (client.Devendo == 1){
+                    <tr class="row-texto row-divida" bgcolor="red">
+                        <td>@client.Id</td>
+                        <td>@client.Tipopessoa</td>
+                        <td>@client.Razaosocial</td>
+                        <td>@client.Nomefic</td>
+                        <td>@client.Email</td>
+                        <td>@client.Telefonecontato1</td>
+                        <td>@client.Cidade</td>
+                        <td>@client.Uf</td>
+                        <td>
+                            <button @onclick="() => EditClient(client.Id)">Editar</button>
+                            <button @onclick="() => DeleteClient(client.Id)">Excluir</button>
+                        </td>
+                    </tr>
+                    }else if (client.Devendo == 2){
+                    <tr class="row-texto row-ativo" bgcolor="green">
+                        <td>@client.Id</td>
+                        <td>@client.Tipopessoa</td>
+                        <td>@client.Razaosocial</td>
+                        <td>@client.Nomefic</td>
+                        <td>@client.Email</td>
+                        <td>@client.Telefonecontato1</td>
+                        <td>@client.Cidade</td>
+                        <td>@client.Uf</td>
+                        <td>
+                            <button @onclick="() => EditClient(client.Id)">Editar</button>
+                            <button @onclick="() => DeleteClient(client.Id)">Excluir</button>
+                        </td>
+                    </tr>
+                    }else{
+                        <tr class="row-texto">
+                            <td>@client.Id</td>
+                            <td>@client.Tipopessoa</td>
+                            <td>@client.Razaosocial</td>
+                            <td>@client.Nomefic</td>
+                            <td>@client.Email</td>
+                            <td>@client.Telefonecontato1</td>
+                            <td>@client.Cidade</td>
+                            <td>@client.Uf</td>
+                            <td>
+                                <button @onclick="() => EditClient(client.Id)">Editar</button>
+                                <button @onclick="() => DeleteClient(client.Id)">Excluir</button>
+                            </td>
+                    </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Controle de Paginação -->
+    <div class="pagination">
+        <div class="wc-box">
+        <button class="closetwo" @onclick="PreviousPage" disabled="@(!HasPreviousPage)">Anterior</button>
+        </div
+        <span>Página @currentPage de @totalPages</span>
+        <div class="wc-box">
+        <button class="closetwo" @onclick="NextPage" disabled="@(!HasNextPage)">Próxima</button>
+        </div>
+    </div>
+
+    <!-- Modal de Cadastro / Edição -->
+    @if (showModal)
+    {
+         <div class="modal-overlay">
+            <div class="modal-content">
+
+                <div>
+                    <div class="wc-box">
+                        <button class="close" @onclick="CloseModal">fechar</button>
+                    </div>
+
+                    <h3>Cadastro de Cliente</h3>
+
+                    <EditForm Model="formModel" OnValidSubmit="FormValidado">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="form-group">
+                            <h6 for="TipoPessoa">Tipo Pessoa</h6>
+                            <select @bind="formModel.Tipopessoa" class="form-control">
+                                <option value="Fisico">Físico</option>
+                                <option value="Juridico">Jurídico</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <h6 for="RazaoSocial">Razão Social</h6>
+                            <InputText class="form-control" @bind-Value="formModel.Razaosocial" />
+                        </div>
+                        <div class="form-group">
+                            <h6 for="NomeFantasia">Nome Fantasia</h6>
+                            <InputText class="form-control" @bind-Value="formModel.Nomefic" />
+                        </div>
+                        <div class="form-group">
+                            <h6 for="Email">Email</h6>
+                            <InputText type="email" class="form-control" @bind-Value="formModel.Email" />
+                        </div>
+
+                          <!-- Telefone Contato 1 -->
+                <div>
+                    <h5 for="telefone1">Telefone Contato 1:</h5>
+                    <InputText id="telefone1" class="form-control" @bind-Value="formModel.Telefonecontato1" />
+                </div>
+
+                <!-- Telefone Contato 2 -->
+                <div>
+                    <h5 for="telefone2">Telefone Contato 2:</h5>
+                    <InputText id="telefone2" class="form-control" @bind-Value="formModel.Telefonecontato2" />
+                </div>
+
+                <!-- CPF / CNPJ -->
+                <div>
+                    <h5 for="cpfCnpj">CPF / CNPJ:</h5>
+                    <InputText id="cpfCnpj" class="form-control" @bind-Value="formModel.Cpfcnpj" />
+                </div>
+
+                <!-- RG -->
+                <div>
+                    <h5 for="rg">RG:</h5>
+                    <InputText id="rg" class="form-control" @bind-Value="formModel.Rg" />
+                </div>
+
+                <!-- Data de Cadastro -->
+                <div>
+                    <h5 for="dataCadastro">Data de Cadastro:</h5>
+                    <InputDate id="dataCadastro" class="form-control" @bind-Value="formModel.Datacadastro" />
+                </div>
+
+                <!-- Data de Nascimento -->
+                <div>
+                    <h5 for="dataNascimento">Data de Nascimento:</h5>
+                    <InputDate id="dataNascimento" class="form-control" @bind-Value="formModel.Datanascimento" />
+                </div>
+
+                <!-- CEP -->
+                <div>
+                    <h5 for="cep">CEP:</h5>
+                    <InputText id="cep" class="form-control" @bind-Value="formModel.Cep" />
+                </div>
+
+                <!-- Endereço -->
+                <div>
+                    <h5 for="endereco">Endereço:</h5>
+                    <InputText id="endereco" class="form-control" @bind-Value="formModel.Endereco" />
+                </div>
+
+                <!-- Número -->
+                <div>
+                    <h5 for="numero">Número:</h5>
+                    <InputText id="numero" class="form-control" @bind-Value="formModel.Numero" />
+                </div>
+
+                <!-- Cidade -->
+                <div>
+                    <h5 for="cidade">Cidade:</h5>
+                    <InputText id="cidade" class="form-control" @bind-Value="formModel.Cidade" />
+                </div>
+
+                <!-- UF (Estados do Brasil) -->
+                <div>
+                    <h5 for="uf">UF:</h5>
+                    <select @bind="formModel.Uf" id="uf" class="form-control">
+                        @foreach (var estado in estadosBrasil)
+                        {
+                            <option value="@estado">@estado</option>
+                        }
+                    </select>
+                </div>
+
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-primary" @onclick="HandleValidSubmit">Salvar</button>
+                        </div>
+
+                        
+
+                    </EditForm>
+
+                    <button class="btn btn-secondary mt-3" @onclick="CloseModal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+</body>
+
+@code {
+    private bool formValidado = false;
+    private List<Client> clients = new List<Client>();  // Todos os clientes
+    private List<Client> paginatedClients = new List<Client>();  // Clientes paginados
+    private int currentPage = 1;
+    private int pageSize = 20;  // Quantidade de clientes por página
+    private int totalPages = 1;
+    private bool HasPreviousPage => currentPage > 1;
+    private bool HasNextPage => currentPage < totalPages;
+    public string pesquisa = "";
+    public string pesquisaTipo = "";
+
+    
+    public void FormValidado(){
+        formValidado = true;
+    }
+
+    private async Task LoadClients()
+    {
+        clients = await clientService.GetClientsAsync();
+        totalPages = (int)Math.Ceiling(clients.Count / (double)pageSize);
+        LoadCurrentPageClients();
+    }
+
+    private async Task LoadClientesAsync()
+        {
+            
+            clients = await clientService.GetClientsAsync();
+            // Ordena os clientes de acordo com a coluna e direção escolhidas
+            if (_sortColumn == "Id")
+            {
+                clients = _isAscending ? clients.OrderBy(c => c.Id).ToList() : clients.OrderByDescending(c => c.Id).ToList();
+            }
+            else if (_sortColumn == "Razaosocial"){
+
+                clients = _isAscending ? clients.OrderBy(c => c.Razaosocial).ToList() : clients.OrderByDescending(c => c.Razaosocial).ToList();
+            }
+
+            //_clientes = clientes; // Atualiza a lista de clientes exibidos
+        }
+
+    private async Task SortBy(string column){
+
+        if (_sortColumn == column)
+        {
+            // Se a coluna já estiver selecionada, inverta a direção da ordenação
+            _isAscending = !_isAscending;
+        }
+        else
+        {
+            // Se for uma nova coluna, defina como ascendente
+            _sortColumn = column;
+            _isAscending = true;
+        }
+    // Recarrega a lista de clientes com a nova ordenação
+        LoadCurrentPageClients();
+    }
+
+    private void LoadCurrentPageClients()
+    {
+        // Carregar os clientes da página atual com base no número da página e tamanho
+        paginatedClients = clients
+            .Skip((currentPage - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+    }
+
+    private void NextPage()
+    {
+        if (currentPage < totalPages)
+        {
+            currentPage++;
+            LoadCurrentPageClients();
+        }
+    }
+
+    private void PreviousPage()
+    {
+        if (currentPage > 1)
+        {
+            currentPage--;
+            LoadCurrentPageClients();
+        }
+    }
+    private readonly List<string> estadosBrasil = new List<string>
+    {
+        "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"
+    };
+        private readonly List<string> pesquisaSelect = new List<string>
+    {
+        "Id", "Nome", "Telefone1", "CPF/CNPJ", "Rua", "Cidade", "Estado"
+    };
+
+    private bool _isAscending = true; // Controla a direção da ordenação
+    private string _sortColumn = "Id"; // Controla a coluna de ordenação
+    private bool showModal = false;
+    private CadastroClientModel formModel = new CadastroClientModel();
+
+   // Método para converter de Client para CadastroModel
+    private CadastroClientModel ConvertClientToCadastroModel(Client client)
+    {
+    return new CadastroClientModel
+    {
+        Tipopessoa = client.Tipopessoa,
+        Razaosocial = client.Razaosocial,
+        Nomefic = client.Nomefic,
+        Email = client.Email,
+        Telefonecontato1 = client.Telefonecontato1,
+        Telefonecontato2 = client.Telefonecontato2,
+        Cpfcnpj = client.Cpfcnpj,
+        Rg = client.Rg,
+        Datacadastro = client.Datacadastro,
+        Datanascimento = client.Datanascimento,
+        Cep = client.Cep,
+        Endereco = client.Endereco,
+        Numero = client.Numero,
+        Cidade = client.Cidade,
+        Uf = client.Uf,
+        Devendo = client.Devendo
+    };
+    }
+
+    // Método para converter CadastroModel (do formulário) em Client (para salvar no banco de dados)
+    private Client ConvertCadastroModelToClient(CadastroClientModel cadastroModel)
+    {
+        return new Client
+        {
+            Tipopessoa = cadastroModel.Tipopessoa,
+            Razaosocial = cadastroModel.Razaosocial,
+            Nomefic = cadastroModel.Nomefic,
+            Email = cadastroModel.Email,
+            Telefonecontato1 = cadastroModel.Telefonecontato1,
+            Telefonecontato2 = cadastroModel.Telefonecontato2,
+            Cpfcnpj = cadastroModel.Cpfcnpj,
+            Rg = cadastroModel.Rg,
+            Datacadastro = cadastroModel.Datacadastro,
+            Datanascimento = cadastroModel.Datanascimento,
+            Cep = cadastroModel.Cep,
+            Endereco = cadastroModel.Endereco,
+            Numero = cadastroModel.Numero,
+            Cidade = cadastroModel.Cidade,
+            Uf = cadastroModel.Uf,
+            Devendo = cadastroModel.Devendo
+        };
+    }
+
+    private void OpenModal()
+    {
+        formModel = new CadastroClientModel();
+        showModal = true;
+    }
+
+    private void CloseModal()
+    {
+        showModal = false;
+    }
+
+    private async Task EditClient(int id)
+    {
+        var client = await  clientService.GetClientByIdAsync(id);
+        formModel = ConvertClientToCadastroModel(client);
+        showModal = true; // Abre o modal para editar
+        await LoadClients();
+    }
+
+    private async Task DeleteClient(int id)
+    {
+        await clientService.DeleteClientAsync(id);
+        clients = await clientService.GetClientsAsync(); // Recarregar a lista de clientes
+        await LoadClients();
+    }
+
+    private async Task HandleValidSubmit()
+    
+    {
+        if(formValidado == true){
+        if (formModel.Id == 0)
+        {
+            var formModelTwo = ConvertCadastroModelToClient(formModel);
+            await clientService.CreateClienttAsync(formModelTwo);
+  
+        }
+        else
+        {
+            var formModelTwo = ConvertCadastroModelToClient(formModel);
+            await clientService.UpdateClientAsync(formModelTwo);
+        }
+
+        clients = await clientService.GetClientsAsync();
+        await LoadClients();
+        showModal = false;
+        }else{
+            Console.WriteLine("FALTA VALIDAR FORMS (FORMS SEM PRENCHER)");
+        }
+
+    }
+
+    private string userName;
+
+     protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (!user.Identity.IsAuthenticated)
+        {
+            // Se o usuário não estiver autenticado, redireciona para a página de login
+            Navigation.NavigateTo("/");
+        }
+        else
+        {
+            await LoadClients();
+            userName = user.Identity.Name;
+        }
+    }
+    
+}
