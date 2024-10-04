@@ -11,7 +11,7 @@
 @using global::Services.GlobalVars
 
 <body>
-<h3>Gerenciamento de Clientes</h3>
+<h3>Gerenciamento de Produtos</h3>
 
 <div class="main-content">
     <!-- Botão para abrir o modal -->
@@ -162,24 +162,6 @@
 
             //_clientes = clientes; // Atualiza a lista de clientes exibidos
         }
-
-    private async Task SortBy(string column){
-
-        if (_sortColumn == column)
-        {
-            // Se a coluna já estiver selecionada, inverta a direção da ordenação
-            _isAscending = !_isAscending;
-        }
-        else
-        {
-            // Se for uma nova coluna, defina como ascendente
-            _sortColumn = column;
-            _isAscending = true;
-    }
-
-    // Recarrega a lista de clientes com a nova ordenação
-     LoadCurrentPageProducts();
-}
 
 
     private void LoadCurrentPageProducts()

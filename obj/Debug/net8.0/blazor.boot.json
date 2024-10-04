@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "BancoDeDados",
   "resources": {
-    "hash": "sha256-d4kgheutaqQ6GGb4VeBX3gN05sfujJJIbN811Q1ZWcg=",
+    "hash": "sha256-EWsM7ZkkmQsw1y3uINnSLavEZ2oPOu2HfS3gjCltyqU=",
     "jsModuleNative": {
       "dotnet.native.8.0.8.o73s18d0qw.js": "sha256-juC5sA7gHTLXFEhAKgdM2/RavswpwCtDfjYGsAz2FXg="
     },
@@ -222,10 +222,10 @@
       "mscorlib.wasm": "sha256-Gz8PyW2/fwihe5ul81OwmRUrU71r+KtbyRw6xlOGD+Q=",
       "netstandard.wasm": "sha256-jMTqIQzoDS810lyhZpMO5eEC36EzntXqSVn+2qwkOMQ=",
       "System.Private.CoreLib.wasm": "sha256-NFj5WE5VLP2LptZIRJCUIc1AMk06FmxpsSILfPISwAw=",
-      "BancoDeDados.wasm": "sha256-6FElT3r3XBCuBg19v0JCnvCRu96NXFY1sNXl7C5LVdQ="
+      "BancoDeDados.wasm": "sha256-UOzdynX7h8dqb4+ojK+w6y5f2EBRnOSDT+sxsTJa9YI="
     },
     "pdb": {
-      "BancoDeDados.pdb": "sha256-7wAzMCv6uaUEwxzshiJSw45SaCxO+2bCspF4kR2H8UY="
+      "BancoDeDados.pdb": "sha256-vKHkhetILkI6ix+ArKiBjb4zfk9qamXBB7ltBdQxNLM="
     }
   },
   "cacheBootResources": true,

@@ -41,10 +41,6 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ3JlYXRlRWRpdENsaWVudGUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/eduardomartins/BlazorDBProject/BancoDeDados/BancoDeDados/Pages/CreateProduto.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ3JlYXRlUHJvZHV0by5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = 
-
 [/Users/eduardomartins/BlazorDBProject/BancoDeDados/BancoDeDados/Pages/CreateProdutocopy.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ3JlYXRlUHJvZHV0b2NvcHkucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
@@ -63,6 +59,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [/Users/eduardomartins/BlazorDBProject/BancoDeDados/BancoDeDados/Pages/TinyMCEEditor.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVGlueU1DRUVkaXRvci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/eduardomartins/BlazorDBProject/BancoDeDados/BancoDeDados/Pages/Vendas.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVmVuZGFzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/eduardomartins/BlazorDBProject/BancoDeDados/BancoDeDados/Pages/Weather.razor]

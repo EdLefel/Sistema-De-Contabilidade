@@ -2,8 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using global::Services.GlobalVars;
 
 namespace Models.AddModels{
-    public class CadastroClientModel
-    {
+    public class CadastroClientModel{
         public int Id { get; set; }
         [Required]
         public string Tipopessoa { get; set; }
@@ -44,4 +43,14 @@ namespace Models.AddModels{
         public string Password { get; set; }
     }
 
+    public class Vendas{
+        public int Id { get; set; }  // ID da Venda
+        public int IdCliente { get; set; }  // ID do Cliente
+        public int IdFuncionario { get; set; }  // ID do Funcionário
+        //public DateTime DataVenda { get; set; }  // Data da Venda
+        public decimal TotalVenda { get; set; }  // Total da Venda
+        public string ItensVenda { get; set; }  // Lista de Itens da Venda
+        public bool StatusVenda { get; set; }  // Status da Venda
+        public int ParcelasVendas { get; set; }  // Pagamento da Venda
+    }
 }
