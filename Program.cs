@@ -11,7 +11,7 @@ using DinkToPdf;
 using DinkToPdf.Contracts;
 using Services;
 using Services.GlobalVars;
-
+using BancoDeDados.Services.Vendas;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -21,11 +21,11 @@ builder.Services.AddScoped<AppState>();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(sp.GetRequiredService<AppState>().GlobalUrl) });
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<ClientService>();
+builder.Services.AddScoped<VendasService>();
 
 builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 
 
-builder.RootComponents.Add<App>("#app");
 
 // Registra o Blazored.SessionStorage para usar o sessionStorage
 builder.Services.AddBlazoredSessionStorage();

@@ -43,7 +43,7 @@
 
          <div class="padding" />
 
-         <button class="button-82-pushable" role="button" @onclick="ClientsRoute">
+         <button class="button-82-pushable" role="button" @onclick="VendasRoute">
             <span class="button-82-shadow"></span>
             <span class="button-82-edge"></span>
             <span class="button-82-front text-navitem">
@@ -100,6 +100,10 @@
     }
      public void NotasOneRoute() {
         Navigation.NavigateTo("/generate-pdf");
+    }
+
+         public void VendasRoute() {
+        Navigation.NavigateTo("/vendasg");
     }
 
 }

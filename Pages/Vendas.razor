@@ -1,0 +1,176 @@
+@page "/vendasg"
+@using BancoDeDados.Services
+@using BancoDeDados.Services.Vendas
+@using BancoDeDados.models.Clients
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@using Models.AddModels
+@using Models.Venda
+@using System.Security.Claims
+@inject VendasService vendasService
+@inject ProductService productService
+@using global::Services.GlobalVars
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<body>
+<h3>Gerenciamento De Vendas</h3>
+<button @onclick="OpenModal">Lançar Venda</button>
+
+    <!-- Filtro por período -->
+    <div>
+        <h6>Filtrar por Período:</h6>
+        <label>Data de Início: </label>
+        <InputDate @bind-Value="startDate" class="form-control" />
+        <label>Data de Fim: </label>
+        <InputDate @bind-Value="endDate" class="form-control" />
+        <button class="btn btn-primary mt-3" @onclick="FiltrarVendasPorPeriodo">Filtrar</button>
+    </div>
+
+     <div class="client-table">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Adicionado Por:</th>
+                    <th>Nome do Cliente</th>
+                    <th>Produto</th>
+                    <th>Valor</th>
+                    <th>Data</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var sells in vendas)
+                {
+                    
+                        <tr class="row-texto">
+                            <td>@sells.Id</td>
+                            <td>@sells.NomeUser</td>
+                            <td>@sells.ClienteNome</td>
+                            <td>@sells.ProdutoNome</td>
+                            <td>@sells.Valor</td>
+                            <td>@sells.DataDaVenda</td>
+                            <td>
+                                <button @onclick="() => EditVenda(sells.Id)">Editar</button>
+                                <button @onclick="() => DeleteVenda(sells.Id)">Excluir</button>
+                            </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+  @if (showModal)
+    {
+ <div class="modal-overlay">
+        <div class="modal-content">
+            <div>
+                <div class="wc-box">
+                    <button class="close" @onclick="CloseModal">Fechar</button>
+                </div>
+
+                <h3>Lançar de Venda</h3>
+
+                <EditForm Model="formModel" OnValidSubmit="SalvarVenda">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                        <div>
+                            <div class="form-group">
+                                <h6>Nome do Cliente:</h6>
+                                    <InputText class="form-control" @bind-Value="newSell.ClienteNome" />
+                                </div>
+                                <div class="form-group">
+                                    <h6>Nome do Cliente:</h6>
+                                    <select @bind="newSell.ProdutoNome">
+                                        @foreach (var estado in @products)
+                                        {
+                                        <option value="@estado.ProdutoNome">@estado.ProdutoNome</option>
+                                        productId = estado.Id;                            
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                    <button type="submit" class="btn btn-primary mt-3">Salvar</button>
+                    <button type="button" class="btn btn-secondary mt-3" @onclick="CloseModal">Fechar</button>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn btn-secondary mt-3" @onclick="CloseModal">Fechar</button>
+    }
+</body>
+@code{
+    public Venda newSell = new Venda();
+    public List<Venda> vendas;
+    public List<Product> products = new List<Product>(); 
+    public string errorMessage = "";
+    private string userName;
+    public bool showModal = false;
+    private Venda formModel = new Venda();
+    public int productId = 0;
+
+    private DateTime startDate = DateTime.Now.AddMonths(-1); // Por padrão, um mês atrás
+    private DateTime endDate = DateTime.Now;
+
+    private async Task FiltrarVendasPorPeriodo()
+    {
+        vendas = await vendasService.GetVendasByPeriodAsync(startDate, endDate);
+    }
+
+    private async Task SalvarVenda(){
+        await vendasService.CreateVendaAsync(newSell);
+    }
+    private async Task CarregarVendas()
+    {
+        vendas = await vendasService.GetVendasAsync();
+    }
+
+     private async Task LoadProducts()
+    {
+        products = await productService.GetProductsAsync();
+        //totalPages = (int)Math.Ceiling(products.Count / (double)pageSize);
+        //LoadCurrentPageProducts();
+    }
+
+     protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (!user.Identity.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/");
+        }
+        else
+        {
+            await CarregarVendas();
+            await LoadProducts();
+            userName = user.FindFirst(ClaimTypes.Name)?.Value;
+        }
+    }
+    public void CloseModal(){
+        showModal = false;
+    }
+    public void OpenModal(){
+        showModal = true;
+    }
+
+        private async Task EditVenda(int id)
+    {
+        var vendaedit = await  vendasService.GetVendaByIdAsync(id);
+        formModel =  vendaedit;
+        showModal = true; // Abre o modal para editar
+    }
+
+    private async Task DeleteVenda(int id)
+    {
+        await vendasService.DeleteVendaAsync(id);
+        vendas = await vendasService.GetVendasAsync();
+        await CarregarVendas();
+    }
+}

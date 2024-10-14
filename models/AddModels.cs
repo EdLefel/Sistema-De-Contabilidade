@@ -37,20 +37,21 @@ namespace Models.AddModels{
         public decimal Quantidade { get; set; }
         public string Valor { get; set; }
     }
-
-        public class LoginRequest{
+    public class LoginRequest{
         public string NomeUser { get; set; }
         public string Password { get; set; }
     }
 
-    public class Vendas{
-        public int Id { get; set; }  // ID da Venda
-        public int IdCliente { get; set; }  // ID do Cliente
-        public int IdFuncionario { get; set; }  // ID do Funcionário
-        //public DateTime DataVenda { get; set; }  // Data da Venda
-        public decimal TotalVenda { get; set; }  // Total da Venda
-        public string ItensVenda { get; set; }  // Lista de Itens da Venda
-        public bool StatusVenda { get; set; }  // Status da Venda
-        public int ParcelasVendas { get; set; }  // Pagamento da Venda
+    public class VendasModel{
+        public int Id { get; set; }
+        public string NomeUser { get; set; } = AppState.UserName;
+        public int ClienteId { get; set; }
+        public int ProdutoId { get; set; }
+        public string ClienteNome { get; set; } = "";
+        public string ProdutoNome { get; set; } = "";
+        public decimal Valor { get; set; }
+        public int Parcelas { get; set; }
+        public decimal DividaValor { get; set; }
+        public DateTime? DataDaVenda { get; set; }
     }
 }

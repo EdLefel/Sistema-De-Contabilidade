@@ -4,7 +4,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-namespace BancoDeDados.Services  // Substitua pelo namespace do seu projeto
+namespace BancoDeDados.Services
 {
     public class ProductService
     {

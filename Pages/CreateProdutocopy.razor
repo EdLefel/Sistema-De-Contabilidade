@@ -160,13 +160,11 @@
                 products = _isAscending ? products.OrderBy(p => p.ProdutoNome).ToList() : products.OrderByDescending(p => p.ProdutoNome).ToList();
             }
 
-            //_clientes = clientes; // Atualiza a lista de clientes exibidos
         }
 
 
     private void LoadCurrentPageProducts()
     {
-        // Carregar os clientes da página atual com base no número da página e tamanho
         paginatedProducts = products
             .Skip((currentPage - 1) * pageSize)
             .Take(pageSize)
