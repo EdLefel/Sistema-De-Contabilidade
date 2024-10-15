@@ -2,6 +2,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Services.GlobalVars;
 
 namespace BancoDeDados.Services.Vendas
 {
@@ -55,7 +56,7 @@ namespace BancoDeDados.Services.Vendas
     public class Venda
     {
         public int Id { get; set; }
-        public string NomeUser { get; set; }
+        public string NomeUser { get; set; } = AppState.UserName;
         public int ClienteId { get; set; }
         public int ProdutoId { get; set; }
         public string ClienteNome { get; set; } = "";
@@ -63,6 +64,7 @@ namespace BancoDeDados.Services.Vendas
         public decimal Valor { get; set; }
         public int Parcelas { get; set; }
         public decimal DividaValor { get; set; }
+        public string Descricao { get; set; } = "";
         public DateTime? DataDaVenda { get; set; }
     }
 }

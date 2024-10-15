@@ -52,6 +52,7 @@ namespace Models.AddModels{
         public decimal Valor { get; set; }
         public int Parcelas { get; set; }
         public decimal DividaValor { get; set; }
+        public string Descricao { get; set; } = "";
         public DateTime? DataDaVenda { get; set; }
     }
 }

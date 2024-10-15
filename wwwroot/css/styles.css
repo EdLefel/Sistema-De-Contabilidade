@@ -320,3 +320,12 @@
   border-radius: 4px;
   width: 225px;
 }
+
+.size-matters{
+  font-size: 15px;
+  width: 175px;
+}
+
+.pad{
+  padding: 20px;
+}
