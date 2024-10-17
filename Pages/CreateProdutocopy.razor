@@ -15,7 +15,15 @@
 
 <div class="main-content">
     <!-- Botão para abrir o modal -->
-    <button @onclick="OpenModal">Novo Produto</button>
+    <!-- <button @onclick="OpenModal">Novo Produto</button> -->
+
+     <button class="c-buttonadd" @onclick="OpenModal">
+        <span class="c-main">
+            <span class="c-ico"><span class="c-blur"></span> <span class="ico-text">+</span></span>
+            Lançar Produto
+        </span>
+    </button>
+
     <!-- Tabela de clientes -->
     <div class="client-table">
         <table class="table table-striped">

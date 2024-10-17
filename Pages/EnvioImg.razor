@@ -1,0 +1,47 @@
+@page "/imgsend"
+@inject HttpClient Http
+@using Microsoft.AspNetCore.Components.Forms
+
+<h3>Upload de Imagem</h3>
+
+<InputFile OnChange="HandleSelected" />
+<button @onclick="EnviarImagem">Enviar Imagem</button>
+
+@if (!string.IsNullOrEmpty(imageUrl))
+{
+    <img src="@imageUrl" alt="Imagem carregada" style="max-width:300px;" />
+}
+
+
+@code {
+    private IBrowserFile selectedFile;
+    private string imageUrl = "/uploads/";
+    private async Task HandleSelected(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+    }
+
+    private async Task EnviarImagem()
+    {
+        if (selectedFile == null) return;
+
+        var content = new MultipartFormDataContent();
+        var fileContent = new StreamContent(selectedFile.OpenReadStream());
+        fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(selectedFile.ContentType);
+        content.Add(fileContent, "file", selectedFile.Name);
+
+        var response = await Http.PostAsync("api/upload/upload-image", content);
+
+        if (response.IsSuccessStatusCode)
+        {
+            // Imagem enviada com sucesso
+            var resultado = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"Imagem salva: {resultado}");
+        }
+        else
+        {
+            // Falha no envio
+            Console.WriteLine("Erro ao enviar a imagem.");
+        }
+    }
+}

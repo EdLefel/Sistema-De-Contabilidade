@@ -17,7 +17,15 @@
 <div class="main-content">
     <!-- Botão para abrir o modal -->
     <div class="butons-select">
-    <button @onclick="OpenModal">Novo Cliente</button>
+    <!-- <button @onclick="OpenModal">Novo Cliente</button> -->
+
+    <button class="c-buttonadd" @onclick="OpenModal">
+        <span class="c-main">
+            <span class="c-ico"><span class="c-blur"></span> <span class="ico-text">+</span></span>
+            Novo Cliente
+        </span>
+    </button>
+
     <select @bind="pesquisaTipo" class="appearance-select">
         @foreach (var estado in pesquisaSelect)
         {

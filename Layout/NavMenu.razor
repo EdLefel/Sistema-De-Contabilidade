@@ -80,6 +80,16 @@
             📬 PEDIDOS 🔜
             </span>
         </button>
+
+        <div class="padding" />
+
+        <button class="button-82-pushable" role="button" @onclick="ImgRoute">
+            <span class="button-82-shadow"></span>
+            <span class="button-82-edge"></span>
+            <span class="button-82-front text-navitem2">
+            🚚 FORNECEDORES
+            </span>
+        </button>
         
     </nav>
 </div>
@@ -102,8 +112,11 @@
         Navigation.NavigateTo("/generate-pdf");
     }
 
-         public void VendasRoute() {
+        public void VendasRoute() {
         Navigation.NavigateTo("/vendasg");
+    }
+     public void ImgRoute() {
+        Navigation.NavigateTo("/imgsend");
     }
 
 }

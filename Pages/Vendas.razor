@@ -23,7 +23,14 @@
 
     <div class="pad"/>
 
-    <button @onclick="OpenModal">Lançar Venda</button>
+  <!-- Substituido  <button @onclick="OpenModal">Lançar Venda</button> -->
+
+    <button class="c-buttonadd" @onclick="OpenModal">
+        <span class="c-main">
+            <span class="c-ico"><span class="c-blur"></span> <span class="ico-text">+</span></span>
+            Lançar Venda
+        </span>
+    </button>
 
     <div class="pad"/>
 
@@ -70,7 +77,7 @@
                         }
                     }
                     else{
-                        @foreach (var sells in vendas)
+                        @foreach (var sells in paginatedVendas)
                         {
                             <tr class="row-texto">
                                 <td>@sells.Id</td>
@@ -88,6 +95,16 @@
                     }
                 </tbody>
             </table>
+        </div>
+
+         <div class="pagination">
+            <div class="wc-box">
+            <button class="closetwo" @onclick="PreviousPage" disabled="@(!HasPreviousPage)">Anterior</button>
+            </div
+            <span>Página @currentPage de @totalPages</span>
+            <div class="wc-box">
+            <button class="closetwo" @onclick="NextPage" disabled="@(!HasNextPage)">Próxima</button>
+        </div>
         </div>
 
     @if (showModal)
@@ -177,6 +194,12 @@
     public int productId;
     public int clienteId;
     public bool parametroData = false;
+    private int currentPage = 1;
+    private int pageSize = 25;  // Quantidade de clientes por página
+    private int totalPages = 1;
+    private bool HasPreviousPage => currentPage > 1;
+    private bool HasNextPage => currentPage < totalPages;
+    private List<Venda> paginatedVendas = new List<Venda>();  // Clientes paginados
 
     private DateTime startDate = DateTime.Now.AddMonths(-1); // Por padrão, um mês atrás
     private DateTime endDate = DateTime.Now;
@@ -205,33 +228,31 @@
     // Preencha os nomes baseados no retorno dos serviços
             formModel.ClienteNome = cliente.Razaosocial;
             formModel.ProdutoNome = produto.ProdutoNome;
-        // Verificar se o formulário foi preenchido corretamente
-        if (formModel.ClienteId != 0 && formModel.ProdutoId != 0)
+
+        if (formModel.Id != 0) 
         {
-            // Chamar o serviço para criar a venda
-            await vendasService.CreateVendaAsync(formModel);
-
-            // Atualizar a lista de vendas após salvar
+            await vendasService.UpdateVendaAsync(formModel);
             vendas = await vendasService.GetVendasAsync();
-
-            // Fechar o modal
             showModal = false;
         }
-        else
+        else if(formModel.Id == 0)
         {
-            errorMessage = "Por favor, preencha todos os campos obrigatórios.";
+            //errorMessage = "Por favor, preencha todos os campos obrigatórios.";
+            await vendasService.CreateVendaAsync(formModel);
+            vendas = await vendasService.GetVendasAsync();
+            showModal = false;
         }
     }
     private async Task CarregarVendas()
     {
         vendas = await vendasService.GetVendasAsync();
+        totalPages = (int)Math.Ceiling(vendas.Count / (double)pageSize);
+        LoadCurrentPageVendas();
     }
 
      private async Task LoadProducts()
     {
         products = await productService.GetProductsAsync();
-        //totalPages = (int)Math.Ceiling(products.Count / (double)pageSize);
-        //LoadCurrentPageProducts();
     }
         private async Task LoadClients()
     {
@@ -260,6 +281,7 @@
     }
     public void OpenModal(){
         showModal = true;
+        formModel = new Venda();
     }
 
         private async Task EditVenda(int id)
@@ -274,5 +296,31 @@
         await vendasService.DeleteVendaAsync(id);
         vendas = await vendasService.GetVendasAsync();
         await CarregarVendas();
+    }
+
+     private void LoadCurrentPageVendas()
+    {
+                paginatedVendas = vendas
+            .Skip((currentPage - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+    }
+
+    private void NextPage()
+    {
+        if (currentPage < totalPages)
+        {
+            currentPage++;
+            LoadCurrentPageVendas();
+        }
+    }
+
+    private void PreviousPage()
+    {
+        if (currentPage > 1)
+        {
+            currentPage--;
+            LoadCurrentPageVendas();
+        }
     }
 }

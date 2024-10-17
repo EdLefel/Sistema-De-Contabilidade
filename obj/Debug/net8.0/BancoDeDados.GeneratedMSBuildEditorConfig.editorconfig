@@ -45,6 +45,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ3JlYXRlUHJvZHV0b2NvcHkucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[/Users/eduardomartins/BlazorDBProject/BancoDeDados/BancoDeDados/Pages/EnvioImg.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRW52aW9JbWcucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/eduardomartins/BlazorDBProject/BancoDeDados/BancoDeDados/Pages/Fornecedores.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRm9ybmVjZWRvcmVzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
 [/Users/eduardomartins/BlazorDBProject/BancoDeDados/BancoDeDados/Pages/Home.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSG9tZS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
